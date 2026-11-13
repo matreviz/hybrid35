@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Hybrid 35 - Musculação + CrossFit + Hyrox</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#111827;--card:#1f2937;--card2:#0b1220;--line:#374151;
+  --txt:#f3f4f6;--muted:#9ca3af;--red:#ef4444;--red2:#dc2626;
+  --green:#22c55e;--amber:#f59e0b;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font-size:16px;line-height:1.45;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-tap-highlight-color:transparent;padding-bottom:96px}
+
+header{position:sticky;top:0;z-index:50;background:rgba(31,41,55,.95);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hwrap{max-width:640px;margin:0 auto;padding:12px 16px}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:.05em;font-size:18px}
+.brand .bolt{font-size:20px}
+.brand .hl{color:var(--red)}
+.progress-text{font-size:14px;font-weight:700;color:#f87171}
+.bar{width:100%;height:8px;background:var(--line);border-radius:999px;margin-top:8px;overflow:hidden}
+.bar>div{height:8px;background:var(--red);border-radius:999px;transition:width .3s;width:0}
+
+main{max-width:640px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+
+.banner{display:none;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.4);
+  color:#fca5a5;border-radius:12px;padding:12px;font-size:13px}
+.banner.show{display:block}
+
+.phase{margin-bottom:16px}
+.phase:last-child{margin-bottom:0}
+.phase-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.phase-name{font-size:14px;font-weight:600}
+.phase-range{font-size:12px;color:var(--muted);margin-left:8px}
+.phase-count{font-size:12px;color:var(--muted)}
+.nums{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+@media(min-width:640px){.nums{grid-template-columns:repeat(8,1fr)}}
+.num{height:44px;border-radius:10px;font-size:14px;font-weight:700;border:1px solid var(--line);
+  background:var(--card2);color:#d1d5db;cursor:pointer;font-family:inherit;padding:0}
+.num.current{background:var(--red2);border-color:#f87171;color:#fff}
+.num.done{background:rgba(34,197,94,.25);border-color:var(--green);color:#86efac}
+
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.badge{font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px}
+.badge.red{background:rgba(248,113,113,.18);color:#f87171}
+.badge.emerald{background:rgba(52,211,153,.18);color:#34d399}
+.badge.sky{background:rgba(56,189,248,.18);color:#38bdf8}
+.badge.amber{background:rgba(251,191,36,.18);color:#fbbf24}
+.emerald{color:#34d399}.sky{color:#38bdf8}.amber{color:#fbbf24}.red{color:#f87171}
+
+h2.title{font-size:24px;font-weight:800;color:#fff;margin:4px 0}
+.focus{font-size:14px;color:var(--muted);margin:0 0 12px}
+.note{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:12px;
+  padding:12px;font-size:14px;color:#fde68a;margin-bottom:12px}
+
+.timer{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.timer-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.timer-label{font-size:12px;color:var(--muted)}
+.timer-display{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:30px;font-weight:800;color:var(--amber)}
+.timer-display.over{color:#f87171}
+.timer-btns{display:flex;gap:8px;align-items:center}
+button.primary{background:var(--amber);color:#111827;font-weight:800;font-size:14px;
+  padding:0 16px;height:44px;border:none;border-radius:12px;font-family:inherit;cursor:pointer}
+button.icon{width:44px;height:44px;border-radius:12px;background:var(--line);border:none;
+  color:#fff;font-size:16px;cursor:pointer;font-family:inherit}
+.segs{display:flex;gap:4px;margin-top:12px}
+.seg{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.seg>div{height:8px;background:var(--amber);width:0}
+.hint{font-size:12px;color:var(--muted);margin-top:8px}
+
+.blocks{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+.block{cursor:pointer;border-radius:12px;border:1px solid var(--line);padding:16px;background:rgba(11,18,32,.6)}
+.block.done{background:rgba(6,78,59,.2);border-color:rgba(34,197,94,.6)}
+.block.ring{box-shadow:0 0 0 2px var(--amber)}
+.block-row{display:flex;gap:12px;align-items:flex-start}
+.tick{width:24px;height:24px;flex:0 0 auto;border-radius:999px;border:1px solid #6b7280;
+  display:flex;align-items:center;justify-content:center;color:transparent;margin-top:2px;font-size:13px}
+.block.done .tick{background:var(--green);border-color:#4ade80;color:#111827}
+.block-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.block-title{font-size:14px;font-weight:700;color:var(--amber);margin:0}
+.block-time{font-size:12px;color:var(--muted);white-space:nowrap}
+.block-text{font-size:14px;margin:4px 0 0;color:#e5e7eb}
+.block.done .block-text{color:var(--muted);text-decoration:line-through}
+
+.field-label{font-size:14px;font-weight:600;margin-bottom:8px}
+.pain{display:grid;grid-template-columns:repeat(11,1fr);gap:4px}
+.pain button{height:36px;border-radius:6px;font-size:12px;font-weight:700;border:1px solid var(--line);
+  background:var(--card2);color:#d1d5db;font-family:inherit;cursor:pointer;padding:0}
+.pain button.sel{background:var(--red2);border-color:#f87171;color:#fff}
+.warn{font-size:12px;color:#fca5a5;margin-top:8px}
+textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;
+  padding:12px;font-size:14px;color:var(--txt);font-family:inherit;resize:vertical}
+textarea:focus{outline:none;box-shadow:0 0 0 2px var(--red)}
+
+details.card summary{cursor:pointer;font-weight:600;list-style:none}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary:before{content:"▸ ";}
+details.card[open] summary:before{content:"▾ ";}
+details.card ul{margin:12px 0 0;padding-left:18px;font-size:14px;color:#d1d5db}
+details.card li{margin-bottom:8px}
+details.card li b{color:#fff}
+.backup{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.backup button{height:40px}
+
+.foot{font-size:12px;color:#6b7280;text-align:center;margin:0}
+
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(31,41,55,.97);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);z-index:50;
+  padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.nav-inner{max-width:640px;margin:0 auto;padding:12px 16px 0;display:flex;align-items:center;gap:12px}
+.nav-inner button.nav-btn{width:48px;height:48px;border-radius:12px;background:var(--line);
+  border:none;color:#fff;font-size:20px;cursor:pointer;font-family:inherit;flex:0 0 auto}
+#done-btn{flex:1;height:48px;border-radius:12px;font-weight:800;font-size:14px;border:none;
+  background:var(--red2);color:#fff;font-family:inherit;cursor:pointer}
+#done-btn.done{background:#16a34a}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="hrow">
+      <div class="brand"><span class="bolt">⚡</span><span>HYBRID<span class="hl">35</span></span></div>
+      <div id="progress-text" class="progress-text">0 / 35</div>
+    </div>
+    <div class="bar"><div id="progress-bar"></div></div>
+  </div>
+</header>
+
+<main>
+  <div id="storage-banner" class="banner">
+    ⚠️ Este navegador <b>não está salvando o progresso automaticamente</b> (isso acontece ao abrir o arquivo direto do celular, via <code>file://</code>).
+    Use o <b>Backup do progresso</b> no fim da página para guardar, ou hospede o arquivo online (instruções abaixo).
+  </div>
+
+  <section id="detail" class="card"></section>
+
+  <section class="card">
+    <div class="hrow" style="margin-bottom:12px">
+      <h2 style="font-size:16px;font-weight:600;margin:0">🗓️ Todos os treinos</h2>
+      <button class="primary" style="height:34px;font-size:12px;padding:0 12px" onclick="goNext()">Próximo pendente</button>
+    </div>
+    <div id="grid"></div>
+  </section>
+
+  <details class="card">
+    <summary>↔️ Equivalências (sem remo, sled, SkiErg e wall ball)</summary>
+    <ul>
+      <li><b>Remo / Assault Bike</b> → bike ergométrica em esforço forte ou esteira.</li>
+      <li><b>SkiErg</b> → puxada de braços retos no cabo, em ritmo rápido.</li>
+      <li><b>Sled push</b> → avanço caminhando com halteres pesados.</li>
+      <li><b>Sled pull</b> → remada baixa no cabo, carga pesada.</li>
+      <li><b>Wall ball</b> → thruster com halteres (agachamento + desenvolvimento).</li>
+      <li><b>KB swing</b> → pode ser feito com um halter segurado com as duas mãos.</li>
+      <li><b>Barra fixa</b> → puxada alta ou remada com halter, se ainda não tiver as repetições.</li>
+      <li><b>RPE</b> → esforço de 1 a 10. RPE 7 = forte, mas controlado. RPE 5 = ritmo de conversa.</li>
+    </ul>
+  </details>
+
+  <details class="card">
+    <summary>📋 Como usar (frequência, progressão e segurança)</summary>
+    <ul>
+      <li><b>Frequência:</b> 4x por semana (ex.: seg, ter, qui, sex). Os 35 treinos cobrem ~9 semanas. Dá para fazer 3x/semana, só estica o calendário.</li>
+      <li><b>Progressão:</b> quando você fechar todas as séries no topo da faixa de repetições, com técnica boa e no RPE alvo (ou abaixo), aumente 2,5% a 5% na próxima sessão. Não fechou as reps? Mantenha a carga.</li>
+      <li><b>Aquecimento de 5 min é curto:</b> antes das séries pesadas (terra, agachamento, clean, push press) faça 1-2 séries de aproximação com carga leve. Elas contam dentro dos 14 min de força.</li>
+      <li><b>Dor lombar:</b> a Fase 1 tem checkpoint no treino 5. Regra prática: dor até 3/10 durante e sem piora nas 24h seguintes é tolerável; acima disso, reduza carga, troque o exercício ou pare. Dor nova em terra/agachamento: troque por barra hexagonal ou RDL com halteres. Persistiu? Procure um fisioterapeuta.</li>
+      <li><b>Deload:</b> o treino 25 é leve de propósito. Se chegar muito quebrado antes dele, repita a última semana com cargas mais baixas.</li>
+      <li><b>Aeróbico:</b> se estourar 40 min, corte 1 round. Nas simulações de Hyrox (27, 32 e 34), se precisar, faça a parte de força mais leve — a prioridade ali é o condicionamento.</li>
+      <li><b>Core no descanso:</b> nos treinos pesados da Fase 4, se sentir que a força caiu, pule o core do descanso. Ele é acessório e serve para caber no tempo.</li>
+    </ul>
+  </details>
+
+  <details class="card">
+    <summary>💾 Backup do progresso</summary>
+    <p style="font-size:13px;color:#9ca3af;margin:12px 0 0">
+      Se o progresso não estiver salvando (ou antes de trocar de celular), toque em <b>Exportar</b> e guarde o texto
+      (e-mail, bloco de notas). Para restaurar, cole o texto e toque em <b>Importar</b>.
+    </p>
+    <textarea id="backup-text" rows="4" placeholder="Cole aqui o backup para importar" style="margin-top:12px"></textarea>
+    <div class="backup">
+      <button class="primary" onclick="exportState()">Exportar / copiar</button>
+      <button class="icon" style="width:auto;padding:0 14px" onclick="importState()">Importar</button>
+      <button class="icon" style="width:auto;padding:0 14px;background:#7f1d1d" onclick="resetState()">Zerar</button>
+    </div>
+    <div id="backup-msg" style="font-size:12px;color:#86efac;margin-top:8px"></div>
+  </details>
+
+  <p class="foot">Cada treino tem 40 min: aquecimento 5', força 14' e aeróbico 21'. O core entra no descanso da força, com 1 exercício só e apenas quando indicado. Na força, alterne as séries (superset) para caber no tempo. Se estourar, corte 1 round do aeróbico.</p>
+</main>
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-btn" onclick="goPrev()" aria-label="Anterior">‹</button>
+    <button id="done-btn" onclick="toggleDone()"></button>
+    <button class="nav-btn" onclick="goNext(true)" aria-label="Próximo">›</button>
+  </div>
+</nav>
+
+<script>
+const PH={
+  1:{name:"Fase 1 · Lombar Safe",range:"Treinos 1-5",c:"emerald"},
+  2:{name:"Fase 2 · Base Híbrida",range:"Treinos 6-15",c:"sky"},
+  3:{name:"Fase 3 · Construção",range:"Treinos 16-27",c:"amber"},
+  4:{name:"Fase 4 · Performance",range:"Treinos 28-35",c:"red"}
+};
+
+// [fase, título, foco, aquecimento 5min, força 14min, aeróbico 21min, nota]
+const data=[
+[1,"Upper Apoiado + Bike Intervalado","Reabilitação · Peito/Costas","Bike leve 3 min + cat-camel x8 + rotação torácica no banco x8/lado","Supino reto com halteres 4x8 + puxada alta 4x8 em superset, descanso 75s. Core no descanso entre as séries (1 exercício só): prancha frontal 3x30s","Bike: 3 min leve, depois 10 x (30s forte RPE 7 + 60s leve), fechar com 3 min leve","Sem carga axial. A dor deve ficar em no máximo 3/10."],
+[1,"Glúteos & Posterior + Esteira Inclinada","Reabilitação · Cadeia posterior","Caminhada leve 2 min + ponte de glúteo x10 + clamshell com banda x10/lado + bird-dog x5/lado","Hip thrust 4x10 (carga leve a moderada) + cadeira flexora 3x12, descanso 75s. Core no descanso entre as séries (1 exercício só): Pallof press 3x12/lado","Esteira com 8-10% de inclinação: 5 x (3 min de caminhada rápida RPE 7 + 1 min leve), depois 1 min leve","Termine o hip thrust com o glúteo, sem hiperextender a lombar."],
+[1,"Ombros & Peito + Circuito no Cabo","Reabilitação · Tronco apoiado","Bike 2 min + círculos de ombro x10 + face pull leve x12 + wall slide x8","Desenvolvimento sentado com encosto 4x8 + remada baixa apoiada 3x10, descanso 75s. Core no descanso entre as séries (1 exercício só): dead bug 3x10","5 rounds de 4 min: 40s de bike forte, 12 puxadas de braços retos no cabo, 12 remadas baixas leves no cabo, descanso até fechar os 4 min; depois 1 min de bike leve","Mantenha a lombar colada no encosto durante o desenvolvimento."],
+[1,"Pernas em Máquina + Bike Pirâmide","Reabilitação · Inferiores","Esteira leve 3 min + agachamento na caixa sem carga x8 + abdução com banda x12","Leg press 45° 4x10 + cadeira extensora 3x12, amplitude controlada. Core no descanso entre as séries (1 exercício só): bird-dog em marcha 3x10/lado","Bike: 3 min leve, depois 1-2-3-2-1 min fortes (RPE 7-8) com 1 min leve entre eles, fechar com 5 min leve","Pare a descida do leg press antes de a pelve enrolar."],
+[1,"Tronco Estável + Zona 2","Reabilitação · Anti-extensão","Cat-camel x8 + marcha de ponte x8/lado + caminhada leve 2 min","Puxada articulada 4x8 + supino reto com halteres 3x10, descanso 75s. Core no descanso entre as séries (1 exercício só): Pallof press ajoelhado 3x12/lado","Zona 2 contínua de 21 min na esteira inclinada, em ritmo de conversa (RPE 5), com aceleração de 20s a cada 5 min","CHECKPOINT: dor em no máximo 2/10 durante e nas 24h seguintes libera a Fase 2. Se não, repita a Fase 1."],
+[2,"Upper Power + EMOM Bike","Força · Empurrar e puxar","Bike 2 min + band pull-apart x15 + flexão inclinada x8 + rotação torácica x6/lado","Supino reto 5x5 + barra fixa (ou puxada alta) 4x6 em superset, descanso 90s. Core no descanso entre as séries (1 exercício só): elevação de pernas deitado 3x12","EMOM 20 min: min 1 = 12 flexões, min 2 = 8 remadas com halter por lado, min 3 = 40s de bike forte, min 4 = descanso; repetir 5 vezes; depois 1 min leve","Primeiro contato com EMOM. Se não der tempo, reduza as repetições."],
+[2,"Lower Base + Esteira Intervalada","Força · Pernas","Esteira 3 min progressivo + agachamento goblet x8 + avanço lateral x5/lado + ponte x8","Agachamento goblet 4x8 + búlgaro 3x8/perna, descanso 90s. Core no descanso entre as séries (1 exercício só): hollow hold 3x20s","Esteira: 6 x (2 min de corrida RPE 7-8 + 1 min de caminhada), depois 3 min leve","Corrida em ritmo constante. Se a lombar reclamar, troque a corrida por caminhada inclinada."],
+[2,"Hyrox Engine 1","Hinge + condicionamento","Caminhada inclinada 2 min + bird-dog x6/lado + good morning sem carga x10 + KB deadlift leve x8","KB deadlift ou terra com barra 4x8 (RPE 6-7) + remada curvada apoiada 3x10. Core no descanso entre as séries (1 exercício só): dead bug com banda 3x12","AMRAP 18 min: 200 m de esteira, 10 KB swings (ou halter), 20 m de farmer carry, 8 goblet squats; depois 3 min leve","Primeira vez com swing e terra. Pare o round se a técnica quebrar."],
+[2,"Pull & Grip + Circuito de Bike","Costas · Pegada","Bike 2 min + dead hang 2x15s + scapular pull-up x8 + remada com banda x12","Barra fixa (ou puxada frente) 5x5 + remada baixa no cabo 3x10, descanso 90s. Core no descanso entre as séries (1 exercício só): prancha lateral 3x25s/lado","5 rounds de 4 min: 40s de bike forte, 8 remadas com halter por lado, dead hang 20-30s, caminhada rápida na esteira até fechar 4 min; depois 1 min leve","Pegada forte é decisiva no Hyrox."],
+[2,"Push & Tabata","Peito · Ombros · Tríceps","Bike 2 min + círculos de ombro x10 + flexão com pausa x6 + elevação lateral leve x12","Desenvolvimento militar 5x5 + supino inclinado com halteres 3x10, descanso 90s","Bike 2 min leve; Tabata 1 = bike (20s forte / 10s leve x8); 2 min leve; Tabata 2 = goblet squat leve (20s / 10s x8); 2 min leve; Tabata 3 = mountain climbers (20s / 10s x8); 3 min leve","Observe a lombar antes de entrar na parte mais pesada."],
+[2,"Lower + Carrys","Força · Pernas + Hyrox","Esteira 2 min + agachamento com pausa x6 + avanço caminhando sem carga x8/lado + ponte x10","Agachamento livre 5x5 (RPE 7) + mesa flexora 3x10, descanso 90s. Core no descanso entre as séries (1 exercício só): hollow hold 3x25s","EMOM 18 min: min 1 = avanço caminhando com halteres pesados 20 m, min 2 = 12 goblet squats com pausa de 1s embaixo, min 3 = 40s de bike forte; depois 3 min leve","O avanço com halteres pesados substitui o sled push."],
+[2,"Cardio Engine Hyrox","Corrida + cabo","Esteira 3 min progressivo + marcha alta 2x20 m + RDL com halter leve x8 + prancha 20s","Terra romeno com halteres 4x10 + puxada frente 3x10, descanso 75s. Core no descanso entre as séries (1 exercício só): prancha 3x40s","4 rounds: 400 m de esteira (RPE 7-8) + 12 puxadas de braços retos no cabo + 10 swings; descanso 45s entre rounds; depois 3 min leve","As puxadas de braços retos substituem o SkiErg."],
+[2,"Full Body CrossFit I (Cindy)","Metcon clássico","Bike 2 min + inchworm x5 + air squat x10 + flexão x5 + scapular pull-up x5","Front squat 4x6 + desenvolvimento alternado com halteres 3x8, descanso 90s. Core no descanso entre as séries (1 exercício só): prancha reversa 3x20s","AMRAP 18 min (Cindy): 5 barra fixa, 10 flexões, 15 agachamentos livres; depois 3 min de bike leve","Sem barra fixa? Use puxada ou remada com halter."],
+[2,"Upper Hipertrofia + Circuito Cardio","Hipertrofia · Parte superior","Bike 2 min + rotação de ombros com banda x10 + flexão escapular x8 + rosca leve x10","Supino com halteres 4x10 + remada curvada com apoio 4x10 em superset, descanso 60s. Core no descanso entre as séries (1 exercício só): crunch na polia alta 3x15","5 rounds de 4 min: 60s de bike forte, 10 thrusters leves, 20 m de farmer carry, 8 flexões, descanso até fechar os 4 min; depois 1 min leve","Volume e técnica, sem falha extrema."],
+[2,"Lower Hipertrofia + Checkpoint 1 km","Hipertrofia · Pernas","Esteira 3 min + goblet squat x8 + avanço reverso x6/lado + ponte unilateral x6/lado","Búlgaro 4x8/perna + hip thrust 3x10, descanso 75s. Core no descanso entre as séries (1 exercício só): abdominal na paralela 3x12","Esteira 3 min leve, 1 km contra o relógio (anote o tempo), 3 min de caminhada, depois bike 6 x (30s forte / 30s leve) e 3 min leve","CHECKPOINT: anote o tempo de 1 km. ATENÇÃO: as pernas chegam cansadas do treino de pernas — anote isso e repita o teste nas mesmas condições no treino 35."],
+[3,"Terra & Engine","Força · Cadeia posterior","Caminhada inclinada 2 min + cat-camel x6 + good morning x10 + terra com barra vazia x8 + ponte x8","Levantamento terra convencional 5x3 (RPE 8, só com a lombar ok) + remada unilateral com halter 3x10. Core no descanso entre as séries (1 exercício só): prancha 3x30s","EMOM 20 min: min 1 = 40s de bike forte, min 2 = 8 burpees, min 3 = 12 KB swings, min 4 = 12 flexões; repetir 5 vezes; depois 1 min leve","Qualquer dor lombar nova: troque por terra com barra hexagonal ou RDL com halteres."],
+[3,"Press & Cabo","Ombros + condicionamento","Bike 2 min + band dislocates x10 + push-up to down-dog x6 + push press com barra vazia x8","Push press 5x4 + puxada supinada 3x8, descanso 90s","4 rounds for time (meta abaixo de 18 min): 15 puxadas de braços retos no cabo, 10 thrusters com halteres, 8 remadas com halter por lado, 150 m de esteira; depois 3 min leve","Thrusters com carga moderada, sem perder técnica."],
+[3,"Front Squat & Thrusters","Pernas + metcon","Esteira 2 min + agachamento com pausa x6 + front rack hold 20s + avanço x6/lado","Front squat 5x5 + flexora deitada 3x10, descanso 90s. Core no descanso entre as séries (1 exercício só): hollow rock 3x12","4 rounds: 15 thrusters com halteres, 8 burpees, 200 m de esteira; descanso 60s entre rounds; depois 4 min leve","Os thrusters com halteres treinam o padrão do wall ball."],
+[3,"Carrys & Lunges Hyrox","Estações Hyrox","Esteira 2 min + avanço caminhando sem carga x10 + farmer hold leve 20s + agachamento sumô x8","Búlgaro 4x8/perna + remada baixa no cabo 3x10, descanso 75s. Core no descanso entre as séries (1 exercício só): rollout com barra 3x8","4 rounds: 20 m de avanço caminhando com halteres pesados, 12 remadas baixas no cabo pesadas, 30 m de farmer carry, 200 m de esteira; depois 3 min leve","Imita o fim da prova: pernas cheias e pegada cansada."],
+[3,"Pull Strength + AMRAP","Costas · Tração","Bike 2 min + hang 2x20s + scapular pull x8 + remada com banda x12","Barra fixa com peso leve 5x5 + rosca direta 3x10, descanso 90s. Core no descanso entre as séries (1 exercício só): abdominal supra na polia alta 3x12","AMRAP 18 min: 40s de bike forte, 10 elevações de joelhos suspenso, 15 KB swings; depois 3 min leve","Só adicione peso se a barra fixa estiver limpa em 5 repetições."],
+[3,"Full Body CrossFit II (Fran)","Metcon · Levantamento olímpico","Bike 2 min + hang power clean com barra vazia x5 + thruster vazio x6 + scapular pull x5 + air squat x8","Hang power clean com halteres ou KB 5x3 + desenvolvimento unilateral com halter 3x8, descanso 90s","Fran adaptado: 21-15-9 de thrusters e barra fixa (ou puxada), meta abaixo de 10 min; 3 min de descanso; depois 8 min de bike progressivo","Sem ego no clean. Se a técnica quebrar, reduza a carga."],
+[3,"Run Intervals Hyrox","Corrida + burpees","Esteira 3 min progressivo + RDL com halter leve x8 + high knees 2x20s + prancha 20s","Terra romeno com barra 4x6 + elevação pélvica unilateral 3x8/lado, descanso 90s. Core no descanso entre as séries (1 exercício só): Russian twist com halter 3x20","4 rounds: 400 m de esteira (RPE 7-8) + 10 burpee broad jumps; descanso 60s; depois 5 min leve","Burpee broad jump é estação oficial do Hyrox."],
+[3,"Upper Strength + Circuito","Força · Parte superior","Bike 2 min + flexão com pausa x6 + band pull-apart x15 + rotação de ombro com halter leve x8","Supino reto 5x4 + barra fixa com pegada neutra 4x5 em superset, descanso 90s","3 rounds de 7 min: 10 flexões, 10 remadas com halter por lado, 10 push press leve, 200 m de esteira, descanso até fechar os 7 min","Carga alta na força, leve e técnica no aeróbico."],
+[3,"Lower Strength + EMOM","Força · Pernas","Esteira 2 min + agachamento tempo 3-1-1 x5 + avanço reverso x6/lado + ponte x10 + good morning x8","Agachamento livre 5x4 (RPE 8) + leg curl sentado 3x10, descanso 2 min. Core no descanso entre as séries (1 exercício só): hollow hold 3x25s","EMOM 15 min: min 1 = 12 puxadas de braços retos no cabo, min 2 = 12 goblet squats; depois bike 6 min alternando 20s forte e 40s leve","Último treino pesado antes da recuperação."],
+[3,"Deload Ativo","Recuperação · Mobilidade","Mobilidade: cat-camel x8, 90/90 de quadril x6/lado, rotação torácica x8/lado, agachamento profundo com apoio 30s","Goblet squat 3x10 + remada com halter 3x10 + flexão inclinada 3x10, com 50-60% da carga normal. Core no descanso entre as séries (1 exercício só): bird-dog 3x8/lado","Zona 2 de 21 min: 10 min de bike + 11 min de esteira inclinada, em ritmo de conversa (RPE 5)","Semana de recuperação. Leve de propósito, para absorver o treino."],
+[3,"Thrusters & Burpees","Metcon CrossFit","Bike 2 min + inchworm x5 + agachamento com salto leve x5 + push-up x6 + press com halter leve x8","Push press 4x5 + supino inclinado com halteres 3x8, descanso 90s","AMRAP 18 min: 12 thrusters com halteres, 8 burpees, 10 KB swings, 100 m de esteira; depois 3 min leve","Mantenha ritmo constante, sem sprint nos primeiros rounds."],
+[3,"Mini Hyrox 1","Simulação parcial","Esteira 3 min progressivo + inchworm x5 + avanço com rotação x5/lado + puxada de braços retos leve x10","Agachamento goblet pesado 4x6 + remada unilateral com halter 3x8, descanso 75s","4 estações com 400 m de esteira entre elas: 20 puxadas de braços retos no cabo, 20 m de avanço com halteres pesados, 12 burpee broad jumps, 25 thrusters com halteres. Anote o tempo total (meta: cerca de 21 min).","Primeira simulação. A meta é terminar com técnica, não com tempo."],
+[4,"Terra Pesado + EMOM Híbrido","Força máxima técnica","Caminhada inclinada 2 min + cat-camel x6 + terra com barra vazia 2x6 + saltos pequenos x6 + ponte x8","Levantamento terra 5x3 (RPE 8-9) + remada curvada com barra 3x8, descanso 2 min. Core no descanso entre as séries (1 exercício só): Pallof press com press-e-puxa 3x10/lado","EMOM 18 min: min 1 = 40s de bike forte, min 2 = 8 burpees, min 3 = 10 thrusters com halteres; depois 3 min leve","Se a lombar reclamar, volte para terra com barra hexagonal."],
+[4,"Upper Híbrido","Força + metcon superior","Bike 2 min + flexão com apoio na caixa x8 + face pull x12 + press com halter leve x8 + hang 15s","Desenvolvimento militar 5x4 + barra fixa 5x4 em superset, descanso 90s","4 rounds: 15 puxadas de braços retos no cabo, 10 push press, 8 remadas com halter por lado, 15 flexões; descanso 60s; depois 3 min leve","Bom treino para testar carga e fôlego."],
+[4,"Corrida & Carrys","Corrida + estações","Esteira 3 min progressivo + avanço caminhando x8/lado + farmer hold 20s + agachamento sumô x8","Front squat 4x5 (RPE 7-8) + stiff com halteres 3x8, descanso 90s. Core no descanso entre as séries (1 exercício só): rollout 3x10","5 rounds: 400 m de esteira + 20 m de avanço com halteres pesados + 12 remadas baixas no cabo pesadas; depois 4 min leve","Ritmo constante. O último round deve ser tão limpo quanto o primeiro."],
+[4,"CrossFit Benchmark (DT)","Metcon · Teste","Bike 2 min + stiff com barra vazia x8 + hang clean vazio x5 + push jerk vazio x5 + scapular pull x5","Push press 4x5 + puxada articulada 3x8, descanso 90s","DT adaptado: 5 rounds de 6 stiff com barra leve, 4 hang power clean, 3 push jerk com carga leve. Meta abaixo de 15 min; depois 6 min de bike leve.","Carga leve: o objetivo é volume rápido com técnica."],
+[4,"Mini Hyrox 2","Simulação parcial","Esteira 3 min progressivo + avanço lateral x6/lado + puxada de braços retos leve x12 + burpee lento x4","Agachamento livre 4x5 (RPE 7) + remada unilateral com halter 3x8, descanso 75s","5 estações com 300 m de esteira entre elas: 20 puxadas de braços retos, 20 m de avanço com halteres pesados, 12 remadas baixas no cabo pesadas, 15 burpee broad jumps, 25 thrusters. Anote o tempo (meta: abaixo do Mini Hyrox 1).","Compare o tempo com o Mini Hyrox 1."],
+[4,"Força + Grip","Força · Pegada","Caminhada inclinada 2 min + hang 2x20s + good morning x8 + farmer hold leve 20s + ponte x8","Terra com barra hexagonal (ou reta) 5x4 + farmer carry pesado 3x30 m, descanso 2 min. Core no descanso entre as séries (1 exercício só): elevação de joelhos suspenso com rotação 3x10","AMRAP 18 min: 40s de bike forte, 10 flexões, 15 KB swings, 30 m de farmer carry; depois 3 min leve","Pegada forte para o Hyrox."],
+[4,"Mini Hyrox 3","Simulação parcial","Bike 2 min + inchworm x6 + agachamento com salto x5 + ombro com banda x10 + puxada leve x10","Front squat 3x5 + desenvolvimento sentado 3x8, descanso 75s","6 estações com 300 m de esteira entre elas: 20 puxadas de braços retos, 20 m de avanço com halteres pesados, 12 remadas baixas no cabo pesadas, 15 burpee broad jumps, 40 m de farmer carry, 25 thrusters. Anote o tempo.","Quase a prova completa, em versão curta."],
+[4,"Teste Final","Checkpoint final","Esteira 4 min progressivo + inchworm x6 + air squat x10 + scapular pull x6 + flexão x6","Sem carga máxima: goblet squat 3x8 + supino com halteres 3x8, carga moderada (RPE 6-7)","Re-teste: 1 km de esteira contra o relógio (compare com o treino 15), 4 min de caminhada e Cindy de 10 min (AMRAP); 1 min leve. Anote tudo.","Compare com os checkpoints anteriores e planeje o próximo ciclo."]
+];
+
+const workouts=data.map((d,i)=>({id:i+1,phase:d[0],title:d[1],focus:d[2],warmup:d[3],strength:d[4],cond:d[5],note:d[6]}));
+const BLOCKS=[["Aquecimento","5 min","🔥","warmup"],["Força (musculação)","14 min","🏋️","strength"],["Aeróbico (Hyrox / CrossFit)","21 min","🏃","cond"]];
+const LIMITS=[300,1140,2400];
+const STARTS=[0,300,1140];
+const KEY="hybrid35_v6";
+
+let state={done:[],blocks:{},pain:{},notes:{},current:1};
+let storageOK=true;
+try{localStorage.setItem("__t","1");localStorage.removeItem("__t");}catch(e){storageOK=false;}
+
+function load(){if(!storageOK)return;try{const s=JSON.parse(localStorage.getItem(KEY));if(s)state=Object.assign(state,s);}catch(e){}}
+function save(){if(!storageOK)return;try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+let timerInterval=null,timerSeconds=0,isTimerRunning=false;
+const isDone=id=>state.done.indexOf(id)>=0;
+
+function renderGrid(){
+  const g=document.getElementById("grid");g.innerHTML="";
+  [1,2,3,4].forEach(p=>{
+    const ws=workouts.filter(w=>w.phase===p);
+    const n=ws.filter(w=>isDone(w.id)).length;
+    const box=document.createElement("div");box.className="phase";
+    const head=document.createElement("div");head.className="phase-head";
+    head.innerHTML='<div><span class="phase-name '+PH[p].c+'">'+PH[p].name+'</span><span class="phase-range">'+PH[p].range+'</span></div><span class="phase-count">'+n+"/"+ws.length+"</span>";
+    const nums=document.createElement("div");nums.className="nums";
+    ws.forEach(w=>{
+      const b=document.createElement("button");
+      b.className="num"+(w.id===state.current?" current":(isDone(w.id)?" done":""));
+      b.textContent=(isDone(w.id)&&w.id!==state.current)?"✓":w.id;
+      b.title=w.title;
+      b.onclick=()=>selectWorkout(w.id,true);
+      nums.appendChild(b);
+    });
+    box.appendChild(head);box.appendChild(nums);g.appendChild(box);
+  });
+}
+
+function renderDetail(){
+  const w=workouts.find(x=>x.id===state.current),ph=PH[w.phase];
+  const checked=state.blocks[w.id]||[];
+  const pain=state.pain[w.id];
+  let painBtns="";
+  for(let i=0;i<=10;i++){painBtns+='<button class="'+(pain===i?"sel":"")+'" onclick="setPain('+i+')">'+i+"</button>";}
+  const painMsg=(pain!==undefined&&pain>=4)?'<p class="warn">⚠️ Dor 4 ou mais: reduza a carga, troque o exercício ou pare. Se persistir, procure seu fisio.</p>':"";
+  const blocks=BLOCKS.map((b,i)=>
+    '<div id="blk-'+i+'" onclick="toggleBlock('+i+')" class="block'+(checked.indexOf(i)>=0?" done":"")+'">'+
+      '<div class="block-row"><div class="tick">✓</div><div style="flex:1">'+
+        '<div class="block-head"><h3 class="block-title">'+b[2]+" "+b[0]+'</h3><span class="block-time">'+b[1]+'</span></div>'+
+        '<p class="block-text">'+w[b[3]]+'</p>'+
+      '</div></div></div>').join("");
+  document.getElementById("detail").innerHTML=
+    '<div><div class="badge-row"><span class="badge red">TREINO '+w.id+'/35</span><span class="badge '+ph.c+'">'+ph.name+'</span></div>'+
+    '<h2 class="title">'+w.title+'</h2><p class="focus">'+w.focus+'</p></div>'+
+    '<div class="note">ℹ️ '+w.note+'</div>'+
+    '<div class="timer"><div class="timer-top">'+
+      '<div><div class="timer-label">Cronômetro (meta: 40 min)</div><div id="timer-display" class="timer-display">00:00</div></div>'+
+      '<div class="timer-btns"><button id="timer-btn" class="primary" onclick="toggleTimer()">Iniciar</button><button class="icon" onclick="resetTimer()" aria-label="Zerar">↻</button></div>'+
+    '</div>'+
+    '<div class="segs" id="timer-segs"><div class="seg" style="flex:5"><div></div></div><div class="seg" style="flex:14"><div></div></div><div class="seg" style="flex:21"><div></div></div></div>'+
+    '<div id="timer-hint" class="hint"></div></div>'+
+    '<div class="blocks">'+blocks+'</div>'+
+    '<div><div class="field-label">❤️ Dor lombar hoje (0 a 10)</div><div class="pain">'+painBtns+'</div>'+painMsg+'</div>'+
+    '<div style="margin-top:16px"><div class="field-label">✏️ Anotações (cargas, tempos, como foi)</div>'+
+    '<textarea id="note" rows="3" placeholder="Ex.: supino 24 kg x 8, Mini Hyrox em 32:10"></textarea></div>';
+  const ta=document.getElementById("note");
+  ta.value=state.notes[w.id]||"";
+  ta.oninput=function(){setNote(this.value);};
+  updateDoneBtn();updateTimerUI();
+}
+
+function updateDoneBtn(){
+  const b=document.getElementById("done-btn");
+  if(isDone(state.current)){b.className="done";b.innerHTML="✓ Concluído (toque para desfazer)";}
+  else{b.className="";b.innerHTML="Marcar concluído";}
+}
+function updateProgress(){
+  const n=state.done.length,p=Math.round(n/35*100);
+  document.getElementById("progress-text").textContent=n+" / 35 ("+p+"%)";
+  document.getElementById("progress-bar").style.width=p+"%";
+}
+function selectWorkout(id,scroll){
+  state.current=id;save();resetTimer(true);renderGrid();renderDetail();updateProgress();
+  if(scroll)window.scrollTo({top:0,behavior:"smooth"});
+}
+function goNext(plain){
+  if(plain){selectWorkout(Math.min(35,state.current+1),true);return;}
+  const nx=workouts.find(w=>!isDone(w.id));
+  if(nx)selectWorkout(nx.id,true);
+}
+function goPrev(){selectWorkout(Math.max(1,state.current-1),true);}
+function toggleDone(){
+  const i=state.done.indexOf(state.current);
+  if(i>=0)state.done.splice(i,1);else state.done.push(state.current);
+  save();renderGrid();updateDoneBtn();updateProgress();
+}
+function toggleBlock(i){
+  const a=state.blocks[state.current]||[];
+  const k=a.indexOf(i);
+  if(k>=0)a.splice(k,1);else a.push(i);
+  state.blocks[state.current]=a;save();
+  const keep=window.scrollY;renderDetail();window.scrollTo(0,keep);
+}
+function setPain(v){state.pain[state.current]=v;save();const keep=window.scrollY;renderDetail();window.scrollTo(0,keep);}
+function setNote(v){state.notes[state.current]=v;save();}
+
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+function updateTimerUI(){
+  const d=document.getElementById("timer-display");if(!d)return;
+  d.textContent=fmt(timerSeconds);
+  d.classList.toggle("over",timerSeconds>2400);
+  const segs=document.getElementById("timer-segs").children;
+  for(let i=0;i<3;i++){const len=LIMITS[i]-STARTS[i];const pct=Math.max(0,Math.min(100,(timerSeconds-STARTS[i])/len*100));segs[i].firstElementChild.style.width=pct+"%";}
+  const idx=LIMITS.findIndex(l=>timerSeconds<l);
+  const hint=document.getElementById("timer-hint");
+  if(timerSeconds===0&&!isTimerRunning)hint.textContent="Toque em Iniciar para acompanhar os blocos.";
+  else if(idx===-1)hint.innerHTML='<span style="color:#fca5a5">Passou de 40 min. Na próxima, corte 1 round do aeróbico.</span>';
+  else hint.textContent="Agora: "+BLOCKS[idx][0]+" ("+BLOCKS[idx][1]+")";
+  for(let i=0;i<3;i++){const el=document.getElementById("blk-"+i);if(el)el.classList.toggle("ring",isTimerRunning&&i===idx);}
+}
+function toggleTimer(){
+  const btn=document.getElementById("timer-btn");
+  if(isTimerRunning){clearInterval(timerInterval);isTimerRunning=false;btn.textContent="Continuar";}
+  else{
+    isTimerRunning=true;btn.textContent="Pausar";
+    timerInterval=setInterval(function(){
+      timerSeconds++;
+      if(LIMITS.indexOf(timerSeconds)>=0){try{navigator.vibrate&&navigator.vibrate(200);}catch(e){}}
+      updateTimerUI();
+    },1000);
+  }
+  updateTimerUI();
+}
+function resetTimer(silent){
+  clearInterval(timerInterval);isTimerRunning=false;timerSeconds=0;
+  const btn=document.getElementById("timer-btn");if(btn)btn.textContent="Iniciar";
+  if(!silent)updateTimerUI();
+}
+
+function exportState(){
+  const ta=document.getElementById("backup-text");
+  ta.value=JSON.stringify(state);
+  try{navigator.clipboard&&navigator.clipboard.writeText(ta.value);}catch(e){}
+  try{ta.focus();ta.select();}catch(e){}
+  document.getElementById("backup-msg").textContent="Backup gerado (e copiado, se o navegador permitir). Guarde este texto!";
+}
+function importState(){
+  const ta=document.getElementById("backup-text");
+  try{
+    const s=JSON.parse(ta.value);
+    state=Object.assign({done:[],blocks:{},pain:{},notes:{},current:1},s);
+    save();renderGrid();renderDetail();updateProgress();
+    document.getElementById("backup-msg").textContent="Progresso restaurado.";
+  }catch(e){document.getElementById("backup-msg").textContent="Texto inválido. Cole o backup completo.";}
+}
+function resetState(){
+  if(!confirm("Zerar todo o progresso?"))return;
+  state={done:[],blocks:{},pain:{},notes:{},current:1};save();renderGrid();renderDetail();updateProgress();
+  document.getElementById("backup-msg").textContent="Progresso zerado.";
+}
+
+load();
+if(!storageOK||location.protocol==="file:"){
+  document.getElementById("storage-banner").classList.add("show");
+}
+renderGrid();renderDetail();updateProgress();
+</script>
+</body>
+</html>
