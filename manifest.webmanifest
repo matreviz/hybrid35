@@ -1,0 +1,17 @@
+{
+  "name": "Hybrid 35 - Musculação + CrossFit + Hyrox",
+  "short_name": "Hybrid 35",
+  "description": "Programa híbrido de 35 treinos: musculação, CrossFit e Hyrox.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
