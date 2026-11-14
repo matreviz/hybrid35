@@ -1,0 +1,18 @@
+{
+  "id": "ana-30treinos",
+  "name": "30 Treinos - Retomada",
+  "short_name": "30 Treinos",
+  "description": "Programa de 30 treinos em 3 fases: musculação, funcional e HIIT.",
+  "start_url": "ana.html",
+  "scope": "ana.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#141b26",
+  "theme_color": "#141b26",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "ana-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "ana-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "ana-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

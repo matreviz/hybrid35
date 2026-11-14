@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141b26">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="30 Treinos">
+<link rel="manifest" href="ana-manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="ana-favicon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="ana-icon-192.png">
+<link rel="apple-touch-icon" href="ana-apple-touch-icon.png">
+<title>30 Treinos – Retomada</title>
+<style>
+:root{--bg:#141b26;--card:#1e2837;--card2:#263246;--txt:#eef2f7;--mut:#9aa7ba;--mint:#4fe3b5;--coral:#ff7b6b;--line:#2f3c52}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.45;padding-bottom:40px}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;background:var(--bg);z-index:5;padding:14px 0 10px;border-bottom:1px solid var(--line)}
+h1{font-size:19px;margin:0 0 8px;display:flex;justify-content:space-between;align-items:center}
+.reset{background:none;border:1px solid var(--line);color:var(--mut);border-radius:8px;padding:6px 10px;font-size:12px}
+.bar{height:12px;background:var(--card2);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mint),#7df0cc);transition:width .4s}
+.stat{font-size:14px;color:var(--mut);margin-top:6px}.stat b{color:var(--mint)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chip{flex:none;background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:99px;padding:9px 14px;font-size:14px}
+.chip.on{background:var(--mint);color:#0b1a14;border-color:var(--mint);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:12px 0}
+.num{aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:17px;font-weight:600;position:relative}
+.num.done{background:rgba(79,227,181,.18);border-color:var(--mint);color:var(--mint)}
+.num.done::after{content:"✓";position:absolute;top:2px;right:6px;font-size:11px}
+.num.cur{outline:2px solid var(--coral);outline-offset:1px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-top:12px;border:1px solid var(--line)}
+.tag{display:inline-block;font-size:12px;padding:3px 9px;border-radius:99px;margin-right:6px;background:var(--card2);color:var(--mut)}
+.tag.m{color:var(--mint)}.tag.c{color:var(--coral)}
+h2{font-size:21px;margin:8px 0 4px}
+.focus{color:var(--mut);font-size:15px;margin:0 0 8px}
+.rpe{background:rgba(255,123,107,.12);border:1px solid rgba(255,123,107,.4);color:#ffb3a9;border-radius:10px;padding:8px 12px;font-size:13px}
+h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--mint);margin:20px 0 6px}
+.ex{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.ex:last-child{border:none}
+.ex input{width:26px;height:26px;accent-color:var(--mint);flex:none;margin-top:1px}
+.ex b{display:block;font-size:16px}.ex span{font-size:14px;color:var(--mut)}
+.ex.chk b{text-decoration:line-through;color:var(--mut)}
+.nav{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;min-height:54px;border-radius:14px;border:none;font-size:16px;font-weight:700}
+.btn.sec{background:var(--card2);color:var(--txt)}
+.btn.main{background:var(--mint);color:#0b1a14;flex:2}
+.btn.main.undo{background:var(--card2);color:var(--coral);border:1px solid var(--coral)}
+.btn:disabled{opacity:.35}
+.note{font-size:12px;color:var(--mut);margin-top:20px;text-align:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--mint);color:#0b1a14;padding:12px 18px;border-radius:12px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .3s}
+.toast.show{opacity:1}
+details.guide{background:var(--card);border-radius:16px;padding:16px;margin-top:12px;border:1px solid var(--line)}
+details.guide summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none}
+details.guide summary::-webkit-details-marker{display:none}
+details.guide summary:before{content:"▸ "}
+details.guide[open] summary:before{content:"▾ "}
+details.guide ul{margin:12px 0 0;padding-left:18px;font-size:14px;color:var(--mut)}
+details.guide li{margin-bottom:8px}
+details.guide li b{color:var(--txt)}
+a.cross{display:inline-block;margin-top:14px;color:var(--mint);font-size:13px;text-decoration:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <h1><span>🏃‍♀️ 30 Treinos</span><button class="reset" id="reset">Resetar</button></h1>
+ <div class="bar"><i id="fill"></i></div>
+ <div class="stat" id="stat"></div>
+</header>
+<div class="chips" id="chips"></div>
+<div class="grid" id="grid"></div>
+<div id="detail"></div>
+<details class="guide">
+ <summary>📋 Como usar (frequência, progressão e segurança)</summary>
+ <ul>
+  <li><b>Frequência:</b> 3 a 4x por semana (ex.: seg, qua, sex, sáb). Os 30 treinos cobrem cerca de 8 a 10 semanas.</li>
+  <li><b>Progressão:</b> completou todas as séries no topo das repetições, com técnica boa e no RPE da fase? Aumente 2,5 a 5% na próxima. Não completou? Mantenha a carga.</li>
+  <li><b>Descanso:</b> pelo menos 1 dia entre dois treinos que peguem o mesmo grupo muscular. O corpo cresce no descanso.</li>
+  <li><b>Aquecimento curto:</b> nos dias de barra, faça 1-2 séries de aproximação com carga leve antes das séries pesadas.</li>
+  <li><b>Deload:</b> se chegar muito cansada, repita a última semana com cargas mais baixas antes de seguir.</li>
+  <li><b>Sinais de atenção:</b> dor articular, escape de urina ou abaulamento abdominal = reduza a carga/impacto e ajuste o exercício.</li>
+ </ul>
+ <a class="cross" href="./">⚡ Ver o treino do parceiro (Hybrid 35)</a>
+</details>
+<p class="note">Respeite seu corpo: se sentir dor, escape de urina ou abaulamento abdominal, reduza a carga e converse com seu médico/fisioterapeuta.</p>
+</div>
+<div class="toast" id="toast">Treino concluído! 💪</div>
+
+<script>
+// ===== DADOS (versão intensa) =====
+const W=(n,t,title,focus,warm,main,cool)=>({n,t,title,focus,warm,main,cool,ph:n<=10?1:n<=20?2:3});
+const RPE={1:"Intensidade: RPE 7–8. Escolha uma carga em que as 2 últimas repetições de cada série sejam difíceis, mas com boa técnica.",2:"Intensidade: RPE 8–9. Pare cada série com 1–2 repetições de reserva. Aumente a carga quando completar todas as repetições com facilidade.",3:"Intensidade: RPE 9. Séries pesadas, descansos curtos e ritmo forte. Técnica sempre em primeiro lugar."};
+const wBase=["Esteira ou bike em ritmo moderado — 3 min","Rotação de ombros e quadril — 10x cada","Agachamento sem peso com pausa embaixo — 10x","Prancha com toque no ombro — 8x cada lado"];
+const wDyn=["Bike ou esteira progressiva — 3 min","Agachamento com pausa e elástico acima dos joelhos — 10x","Avanço alternado com rotação de tronco — 8x cada lado","Polichinelo — 30s"];
+const wRun=["Caminhada rápida e trote leve — 3 min","Skipping (joelho alto) — 20s","Mobilidade de tornozelo e quadril — 1 min","Saltos curtos no lugar — 20s"];
+const cBase=["Alongamento de quadríceps e posterior — 30s cada","Postura da criança com respiração profunda — 1 min","Alongamento de peitoral na parede — 30s cada lado"];
+const cLow=["Alongamento de glúteo (figura 4) — 30s cada lado","Alongamento de panturrilha — 30s cada","Respiração diafragmática deitada — 1 min"];
+const cUp=["Alongamento de dorsal (braço à frente) — 30s cada","Alongamento de tríceps — 30s cada","Rotação torácica no colchonete — 8x cada lado"];
+const cCardio=["Caminhada de desaceleração — 3 min","Alongamento de panturrilha e quadríceps — 30s cada","Respiração 4-6 (inspira 4s, expira 6s) — 1 min"];
+
+const T=[
+// ---------- FASE 1 ----------
+W(1,"Musculação","Musculação A – Corpo todo","Base de força com cargas já desafiadoras",wBase,[
+["Agachamento com barra ou goblet","4x10 · 75s · desça até 90° ou mais, com controle"],
+["Supino com halteres","4x10 · 75s"],
+["Remada curvada com barra ou halteres","4x10 · 75s"],
+["Stiff com halteres","3x10 · 60s · coluna neutra"],
+["Dead bug com carga leve nas mãos","3x10 por lado · 45s"],
+["Finalizador: bike forte","3 min · esforço 8/10"]],cBase),
+W(2,"Funcional","Funcional & Core – Circuito intenso","Core forte com ritmo cardiorrespiratório",wBase,[
+["Circuito 4 voltas · 45s trabalho / 15s pausa","Descanso de 75s entre voltas"],
+["Agachamento com kettlebell","Segure no peito, desça fundo"],
+["Remada unilateral com halter","Carga pesada, tronco firme"],
+["Avanço alternado com halteres","Passos amplos"],
+["Prancha alta com toque no ombro","Quadril imóvel"],
+["Mountain climber","Ritmo forte, abdômen firme"]],cLow),
+W(3,"HIIT","Aeróbico moderado-forte – Esteira ou bike","Construir base cardiorrespiratória real",wBase,[
+["Aquecimento progressivo","5 min"],
+["8 blocos: 2 min forte (esforço 7/10) + 1 min leve","Ritmo em que só dá para falar frases curtas"],
+["Fechamento contínuo","4 min moderado"],
+["Core: prancha + bird dog","3x40s + 10 por lado"]],cCardio),
+W(4,"Musculação","Musculação B – Inferiores","Pernas e glúteos com carga alta",wBase,[
+["Agachamento com barra","4x10 · 90s · carga moderada-pesada"],
+["Leg press","4x12 · 75s"],
+["Stiff com barra ou halteres","4x10 · 75s"],
+["Elevação pélvica com barra","4x10 · 75s"],
+["Avanço com halteres","3x10 por perna · 60s"],
+["Panturrilha em pé","4x15 · 30s"]],cLow),
+W(5,"Funcional","Funcional & Core – Potência","Core em movimento e estabilidade sob esforço",wBase,[
+["Circuito 4 voltas · 45s / 15s","Descanso de 75s entre voltas"],
+["Kettlebell swing","Quadril explosivo, costas retas"],
+["Flexão no banco ou no solo","Corpo alinhado"],
+["Afundo caminhando com halteres",""],
+["Prancha lateral com elevação de quadril","30–40s cada lado"],
+["Remada alta com elástico","Cotovelos acima das mãos"]],cLow),
+W(6,"Musculação","Musculação C – Superiores","Costas, ombros e braços com volume e carga",wBase,[
+["Barra fixa assistida ou puxada frontal","4x8–10 · 75s"],
+["Desenvolvimento com halteres","4x10 · 75s"],
+["Remada sentada no cabo","4x10 · 60s"],
+["Flexão ou supino inclinado","3x10 · 60s"],
+["Tríceps na polia + rosca direta (superssérie)","3x12 · 45s"],
+["Abdominal com carga no cabo","3x12"]],cUp),
+W(7,"HIIT","Intervalado – Esteira ou bike","Primeiros tiros de verdade",wRun,[
+["Aquecimento","5 min progressivo"],
+["10 tiros de 30s fortes (esforço 8/10)","Recuperação ativa de 60s"],
+["Desaquecimento","4 min"],
+["Ponte glútea unilateral","3x12 por lado"]],cCardio),
+W(8,"Musculação","Musculação A – Corpo todo (2ª rodada)","Aumentar a carga em relação ao treino 1",wBase,[
+["Agachamento com barra","4x8 · 90s · aumente a carga"],
+["Supino reto com barra ou halteres","4x8 · 90s"],
+["Remada curvada","4x8 · 90s"],
+["Stiff","4x8 · 75s"],
+["Desenvolvimento com halteres","3x10 · 60s"],
+["Prancha com peso nas costas ou a mais longa possível","3x45s"]],cBase),
+W(9,"Funcional","Circuito funcional – Corpo inteiro","Ritmo alto, tudo conectado",wDyn,[
+["5 voltas · 45s / 15s · descanso de 60s","Intensidade contínua"],
+["Agachamento com salto controlado ou kettlebell squat","Aterrisse macio"],
+["Remada unilateral com halter",""],
+["Step-up no banco com halteres",""],
+["Flexão","No solo se conseguir"],
+["Burpee sem flexão","Ritmo forte"]],cBase),
+W(10,"Funcional","Circuito de avaliação – Fim da Fase 1","Teste de capacidade antes da Fase 2",wDyn,[
+["Corrida ou trote contínuo — 10 min","Anote distância ou tempo"],
+["4 voltas: 15 agachamentos com carga, 10 flexões, 10 remadas, 40s prancha","Descanso de 60s"],
+["Bike forte — 3 min","Esforço 8/10"]],cBase),
+
+// ---------- FASE 2 ----------
+W(11,"Musculação","Força A – Inferiores pesados","Cargas altas em padrões básicos",wDyn,[
+["Agachamento com barra","5x6 · 2 min · peso desafiador"],
+["Levantamento terra romeno","4x8 · 90s"],
+["Avanço búlgaro com halteres","3x10 por perna · 75s"],
+["Mesa flexora","3x12 · 45s"],
+["Prancha com peso","3x40s"]],cLow),
+W(12,"HIIT","HIIT bike – Intervalos fortes","Potência aeróbica",wDyn,[
+["Aquecimento","5 min"],
+["12 x (30s all-out + 45s leve)","Esforço 9/10 nos fortes"],
+["Core: dead bug com carga + bird dog","4x10 por lado"]],cCardio),
+W(13,"Musculação","Força B – Superiores pesados","Empurrar e puxar com carga progressiva",wDyn,[
+["Supino com barra","5x6 · 2 min"],
+["Remada curvada com barra","5x6 · 2 min"],
+["Desenvolvimento militar","4x8 · 90s"],
+["Barra fixa ou puxada pesada","4x8 · 90s"],
+["Tríceps testa + rosca direta (superssérie)","4x10 · 60s"]],cUp),
+W(14,"Funcional","Funcional – Potência e core","Explosão com controle",wDyn,[
+["5 voltas · 45s / 15s · descanso de 60s",""],
+["Kettlebell swing pesado","Quadril explosivo"],
+["Pallof press com cabo","Resista à rotação"],
+["Agachamento com salto","Aterrisse macio"],
+["Burpee","Ritmo forte"],
+["Elevação de pernas deitada","Lombar protegida"]],cLow),
+W(15,"HIIT","HIIT esteira – Inclinação e velocidade","Força de perna e fôlego",wRun,[
+["Aquecimento","6 min"],
+["10 x (60s corrida forte com inclinação de 4–6% + 60s caminhada)","Esforço 8/10"],
+["Desaquecimento","4 min"],
+["Ponte glútea unilateral com carga","4x10 por lado"]],cCardio),
+W(16,"Musculação","Força C – Corpo todo em superséries","Densidade com cargas altas",wDyn,[
+["Agachamento + remada (superssérie)","5x6 + 6 · 90s"],
+["Supino inclinado + stiff","4x8 + 8 · 75s"],
+["Elevação pélvica com barra","4x8 · 75s"],
+["Abdominal infra com carga","3x15"]],cBase),
+W(17,"Funcional","Circuito funcional – Cardio e força","Ritmo alto com cargas moderadas",wDyn,[
+["6 voltas · 45s / 15s · descanso de 60s",""],
+["Thruster com halteres","Agachamento + desenvolvimento"],
+["Remada com kettlebell","Alterne os lados"],
+["Burpee com salto","Se confortável"],
+["Avanço com salto alternado","Aterrisse macio"],
+["Prancha com toque no ombro",""]],cBase),
+W(18,"Musculação","Força-resistência – Inferiores","Volume alto, queima forte",wDyn,[
+["Agachamento com halteres","4x15 · 45s"],
+["Cadeira extensora","4x15 · 45s"],
+["Mesa flexora","4x15 · 45s"],
+["Avanço reverso com halteres","4x12 por perna · 45s"],
+["Panturrilha em pé","5x15"]],cLow),
+W(19,"HIIT","HIIT misto – Bike + peso corporal","Cardio e força em blocos curtos",wDyn,[
+["5 blocos: 3 min bike forte (esforço 8/10) + 4 exercícios de 40s (agachamento com salto, flexão, remada, prancha)","Descanso de 60s entre blocos"]],cCardio),
+W(20,"Funcional","Avaliação – Fim da Fase 2","Teste de capacidade e carga",wDyn,[
+["Corrida contínua — 15 min","Anote distância"],
+["4 voltas: 15 agachamentos com carga, 12 remadas, 10 flexões, 40s prancha","Descanso de 60s"],
+["Compare com o treino 10","Aumento de carga e de ritmo"]],cBase),
+
+// ---------- FASE 3 ----------
+W(21,"Musculação","Condicionamento A – Superséries pesadas inferiores","Força com densidade metabólica",wDyn,[
+["Agachamento + avanço (superssérie)","5x6 + 8 · 90s"],
+["Stiff + elevação pélvica (superssérie)","4x8 + 10 · 75s"],
+["Cadeira extensora + mesa flexora","4x12 + 12 · 45s"],
+["Prancha com peso","3x45s"]],cLow),
+W(22,"HIIT","Corrida intervalada – Esteira","Retomar passada atlética",wRun,[
+["Aquecimento","6 min progressivo"],
+["8 x (90s corrida forte, esforço 8–9/10 + 60s caminhada)",""],
+["Finalizador: 5 min no ritmo confortável",""],
+["Desaquecimento","4 min"]],cCardio),
+W(23,"Musculação","Condicionamento B – Superiores pesados","Empurrar e puxar em superséries",wDyn,[
+["Supino + remada curvada (superssérie)","5x6 + 6 · 90s"],
+["Desenvolvimento + barra fixa ou puxada (superssérie)","4x8 + 8 · 75s"],
+["Tríceps + bíceps (superssérie)","4x10 + 10 · 45s"],
+["Prancha lateral com elevação","3x30s cada lado"]],cUp),
+W(24,"Funcional","Funcional metabólico – Blocos","Blocos de 8 min com pouca pausa",wDyn,[
+["Bloco 1 — 8 min AMRAP","10 agachamentos com kettlebell, 8 remadas, 6 flexões, 6 burpees"],
+["Descanso 2 min",""],
+["Bloco 2 — 8 min AMRAP","10 avanços com halteres, 10 swings, 20s prancha, 10 mountain climbers"],
+["Descanso 2 min",""],
+["Finalizador — 3 min","Burpee 30s / descanso 15s"]],cBase),
+W(25,"HIIT","HIIT bike – Pirâmide máxima","Tolerância ao esforço alto",wDyn,[
+["Aquecimento","5 min"],
+["Pirâmide: 30s / 45s / 60s / 90s / 60s / 45s / 30s all-out","Recuperação de 60–75s · repetir 2x"],
+["Desaquecimento","4 min"]],cCardio),
+W(26,"Musculação","Condicionamento C – Corpo todo","Força com cardio entre séries",wDyn,[
+["Agachamento + 40s polichinelo ou corda","5 rodadas · 60s"],
+["Remada + 40s shadow boxing","5 rodadas · 60s"],
+["Supino + 40s step-up com joelho alto","4 rodadas · 60s"],
+["Elevação pélvica + prancha","4 rodadas · 45s"]],cBase),
+W(27,"HIIT","Corrida intervalada longa – Esteira","Ritmo atlético sustentado",wRun,[
+["Aquecimento","6 min progressivo"],
+["6 x (3 min ritmo forte, esforço 8/10 + 1 min caminhada)",""],
+["Desaquecimento","5 min"]],cCardio),
+W(28,"Funcional","Circuito atlético – Potência total","Explosão com técnica",wDyn,[
+["6 voltas · 45s / 15s · descanso de 60s",""],
+["Kettlebell swing pesado","Quadril explosivo"],
+["Agachamento com salto","Aterrisse macio"],
+["Thruster com halteres",""],
+["Burpee completo",""],
+["Prancha dinâmica","Alternando cotovelos e mãos"]],cBase),
+W(29,"Musculação","Força total – Simulado","Rotina completa com cargas máximas da fase",wDyn,[
+["Agachamento","5x5 · 2 min"],
+["Supino","5x5 · 2 min"],
+["Remada curvada","5x5 · 2 min"],
+["Stiff","4x8"],
+["Desenvolvimento","4x8"],
+["Prancha lateral + dead bug com carga","3x40s + 10 por lado"]],cBase),
+W(30,"HIIT","Treino final – Desafio","Conclusão da jornada em ritmo atlético",wRun,[
+["Aquecimento","6 min progressivo"],
+["Desafio: 3 km no melhor ritmo que mantiver ou 20 min contínuos forte","Finalize forte"],
+["Circuito rápido: 15 agachamentos com salto, 12 remadas, 10 burpees, 40s prancha","3 rodadas"],
+["Anote seu tempo e como se sentiu","Compare com o treino 3"]],cCardio)
+];
+
+// ===== ESTADO =====
+const KEY="treinos30_v2";
+let S={done:{},ex:{},cur:1};
+try{
+ let r=localStorage.getItem(KEY);
+ if(r)S=Object.assign(S,JSON.parse(r));
+ else{const old=localStorage.getItem("treinos30_v1");if(old){const o=JSON.parse(old);S.done=o.done||{};S.cur=o.cur||1}}
+}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let filter="all";
+const $=id=>document.getElementById(id);
+
+const FILTERS=[["all","Todos"],["p1","Fase 1"],["p2","Fase 2"],["p3","Fase 3"],["Musculação","Musculação"],["Funcional","Funcional"],["HIIT","HIIT/Aeróbico"]];
+function pass(w){return filter==="all"||(filter[0]==="p"&&filter.length===2?w.ph==+filter[1]:w.t===filter)}
+
+function renderChips(){
+ $("chips").innerHTML=FILTERS.map(([k,l])=>`<button class="chip ${filter===k?"on":""}" data-k="${k}">${l}</button>`).join("");
+ $("chips").onclick=e=>{const k=e.target.dataset.k;if(k){filter=k;renderChips();renderGrid()}};
+}
+function renderGrid(){
+ $("grid").innerHTML=T.filter(pass).map(w=>`<button class="num ${S.done[w.n]?"done":""} ${S.cur===w.n?"cur":""}" data-n="${w.n}">${w.n}</button>`).join("");
+ $("grid").onclick=e=>{const n=e.target.closest("[data-n]");if(n)go(+n.dataset.n,true)};
+}
+function renderProgress(){
+ const c=Object.keys(S.done).filter(k=>S.done[k]).length,p=Math.round(c/30*100);
+ $("fill").style.width=p+"%";
+ $("stat").innerHTML=`<b>${c}/30</b> concluídos — <b>${p}%</b>`;
+}
+function renderDetail(){
+ const w=T[S.cur-1],d=!!S.done[w.n];
+ const tc=w.t==="Musculação"?"m":w.t==="HIIT"?"c":"";
+ const block=(title,items,isMain)=>`<h3>${title}</h3>`+items.map((it,i)=>{
+   const txt=Array.isArray(it)?it[0]:it,sub=Array.isArray(it)?it[1]:"";
+   const id=`${w.n}_${isMain}_${i}`,ck=S.ex[id];
+   return `<label class="ex ${ck?"chk":""}"><input type="checkbox" data-id="${id}" ${ck?"checked":""}><div><b>${txt}</b>${sub?`<span>${sub}</span>`:""}</div></label>`}).join("");
+ $("detail").innerHTML=`<div class="card">
+  <span class="tag">Fase ${w.ph}</span><span class="tag ${tc}">${w.t}</span><span class="tag">⏱ 35–40 min</span>
+  <h2>Treino ${String(w.n).padStart(2,"0")} – ${w.title}</h2>
+  <p class="focus">Foco do dia: ${w.focus}</p>
+  <div class="rpe">🔥 ${RPE[w.ph]}</div>
+  ${block("Aquecimento & mobilidade (3–5 min)",w.warm,"w")}
+  ${block("Treino principal (25–30 min)",w.main,"m")}
+  ${block("Desaceleração & alongamento (3–5 min)",w.cool,"c")}
+  <div class="nav">
+   <button class="btn sec" id="prev" ${w.n===1?"disabled":""}>← Anterior</button>
+   <button class="btn main ${d?"undo":""}" id="finish">${d?"Desmarcar conclusão":"Concluir treino ✓"}</button>
+   <button class="btn sec" id="next" ${w.n===30?"disabled":""}>Próximo →</button>
+  </div></div>`;
+ $("detail").querySelectorAll("input[data-id]").forEach(i=>i.onchange=()=>{
+   S.ex[i.dataset.id]=i.checked;save();i.closest(".ex").classList.toggle("chk",i.checked)});
+ $("prev").onclick=()=>go(S.cur-1,true);
+ $("next").onclick=()=>go(S.cur+1,true);
+ $("finish").onclick=()=>{
+   if(S.done[w.n]){delete S.done[w.n]}
+   else{S.done[w.n]=true;toast();}
+   save();renderAll();
+   if(S.done[w.n]&&w.n<30)setTimeout(()=>go(w.n+1,true),700);
+ };
+}
+function go(n,scroll){
+ if(n<1||n>30)return;S.cur=n;save();renderAll();
+ if(scroll)$("detail").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function toast(){const t=$("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)}
+function renderAll(){renderProgress();renderGrid();renderDetail()}
+$("reset").onclick=()=>{if(confirm("Apagar todo o progresso?")){S={done:{},ex:{},cur:1};save();renderAll()}};
+
+// Deslizar para trocar de treino
+let sx=null;
+document.addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
+document.addEventListener("touchend",e=>{
+ if(sx===null||e.target.closest(".chips,.grid"))return;
+ const dx=e.changedTouches[0].clientX-sx;sx=null;
+ if(Math.abs(dx)>90)go(S.cur+(dx<0?1:-1),false);
+});
+
+if(!S.cur||S.done[S.cur]){const nx=T.find(w=>!S.done[w.n]);S.cur=nx?nx.n:S.cur||1}
+renderChips();renderAll();
+</script>
+</body>
+</html>
