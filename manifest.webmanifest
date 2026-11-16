@@ -1,7 +1,7 @@
 {
-  "name": "Hybrid 35 - Musculação + CrossFit + Hyrox",
+  "name": "Hybrid 35 + Hyrox + CrossFit + Race",
   "short_name": "Hybrid 35",
-  "description": "Programa híbrido de 35 treinos: musculação, CrossFit e Hyrox.",
+  "description": "4 abas: Hybrid 35 (35 treinos), Hyrox (10), CrossFit (10) e Race (10).",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
