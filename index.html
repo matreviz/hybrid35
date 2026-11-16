@@ -122,6 +122,15 @@ details.card li b{color:#fff}
 .backup{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .backup button{height:40px}
 
+.wk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.wk li{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--line);
+  border-radius:10px;padding:8px 12px;font-size:14px}
+.wk li b{flex:0 0 40px;color:#fff;font-size:13px;font-weight:700}
+.wk li span{color:#d1d5db}
+.wk li.rest span{color:var(--muted)}
+.wk li.today{border-color:var(--red2);box-shadow:0 0 0 1px var(--red2) inset}
+.wk li.today b:after{content:" ← hoje";color:#f87171;font-size:11px;font-weight:700}
+
 .foot{font-size:12px;color:#6b7280;text-align:center;margin:0}
 
 nav{position:fixed;bottom:0;left:0;right:0;background:rgba(31,41,55,.97);
@@ -197,6 +206,26 @@ nav{position:fixed;bottom:0;left:0;right:0;background:rgba(31,41,55,.97);
     </div>
     <div id="backup-msg" style="font-size:12px;color:#86efac;margin-top:8px"></div>
   </details>
+
+  <section class="card" id="week-card">
+    <h2 style="font-size:16px;font-weight:600;margin:0 0 6px">🗓️ Sua semana (seg, qui, sex, sáb, dom)</h2>
+    <p style="font-size:13px;color:var(--muted);margin:0 0 12px">
+      Plano "foco Hyrox": força 3x + condicionamento 2x, alternando pra não empilhar dois dias pesados de perna.
+    </p>
+    <ul class="wk" id="wk">
+      <li data-d="1"><b>Seg</b><span>⚡ Hybrid 35 · força</span></li>
+      <li data-d="2" class="rest"><b>Ter</b><span>Descanso</span></li>
+      <li data-d="3" class="rest"><b>Qua</b><span>Descanso</span></li>
+      <li data-d="4"><b>Qui</b><span>⚡ Hybrid 35 · força</span></li>
+      <li data-d="5"><b>Sex</b><span>🏁 Race</span></li>
+      <li data-d="6"><b>Sáb</b><span>⚡ Hybrid 35 · força</span></li>
+      <li data-d="0"><b>Dom</b><span>🔥 Hyrox</span></li>
+    </ul>
+    <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">
+      Quer trocar? Use <b>CrossFit</b> no lugar da Race (Sex) ou do Hyrox (Dom).
+      Enquanto estiver na <b>Fase 1</b> do Hybrid 35, deixe o Hyrox de domingo mais leve ou troque por CrossFit.
+    </p>
+  </section>
 
   <p style="text-align:center;margin:18px 0 0"><a href="ana.html" style="display:inline-block;color:var(--green);font-size:13px;text-decoration:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px">🏃‍♀️ Ver o treino da Ana (30 Treinos)</a></p>
 
@@ -286,19 +315,19 @@ const cfData=[
 ];
 
 // ============================================================
-// ABA 4 - RACE (estilo estúdio: tiro na esteira + funcional, 45 min)
+// ABA 4 - RACE (estilo estúdio: esteira com velocidade variável + funcional, 45 min)
 // ============================================================
 const raceData=[
-[1,"Pyramid Race","Tiros em pirâmide + circuito","Esteira 3 min progressivo + mobilidade de tornozelo e quadril + agachamento sem carga x10 + polichinelo 30s","Força funcional em circuito: agachamento goblet 3x12 + supino com halteres 3x10 + remada com halter 3x12, descanso 45s","Pirâmide de tiros na esteira: 1-2-3-2-1 min (RPE 8) com 1 min de caminhada entre eles. A cada tiro, ao descer, faça 10 agachamentos com salto leve + 10 flexões. Anote o tempo total","Clássico de estúdio: corre forte e volta pro funcional. Esteira ocupada? Use a bike."],
-[1,"Matrix","Blocos alternados esteira + funcional","Bike 2 min + inchworm x5 + air squat x10 + flexão x6 + rotação de ombro x8","Força funcional em circuito: leg press 3x12 + puxada frente 3x10 + desenvolvimento com halteres 3x10, descanso 45s","6 rounds: 3 min de esteira em ritmo forte (RPE 7-8) + 3 min de circuito funcional (12 KB swings, 10 step up na caixa, 8 burpees, 12 remadas com halter); 1 min de descanso entre rounds. Anote as reps","O circuito é contínuo: divida as reps em séries pequenas."],
-[1,"Party Hard","Circuito de 5 rounds","Esteira 3 min + polichinelo 30s + agachamento x10 + flexão x6 + band pull-apart x15","Força funcional: agachamento livre 4x6 + remada curvada 3x10 + flexão inclinada 3x10, descanso 60s","5 rounds: 400 m de esteira (RPE 8) + 12 thrusters com halteres + 12 KB swings + 10 burpee broad jumps + 20 m de farmer carry; descanso 60s. Anote o tempo","Ritmo alto do começo ao fim. É pra suar e se divertir."],
-[1,"Hyrox Complete","Simulação completa + corrida","Esteira 4 min progressivo + inchworm x5 + avanço sem carga x8/lado + puxada de braços retos leve x12","Força funcional: agachamento goblet pesado 4x6 + remada unilateral com halter 3x8, descanso 60s","Prova em miniatura: 1 km de esteira, depois 8 estações (20 puxadas de braços retos, 20 m de avanço com halteres pesados, 12 remadas baixas pesadas, 30 burpee broad jumps, 40 m de farmer carry, 20 thrusters, 20 afundos, 30 KB swings), depois 1 km de esteira final. Anote o tempo","Ritmo de prova do início ao fim, sem sprint. Meta: 38-44 min."],
-[1,"Tiro & Força","8 tiros de 400 m + força","Esteira 3 min + agachamento com pausa x6 + avanço x6/lado + farmer hold leve 20s","Força funcional: terra romeno com halteres 4x8 + remada baixa no cabo 3x10, descanso 60s","8 rounds: 400 m de esteira (RPE 8-9) + 10 agachamentos goblet + 8 flexões; 60s de descanso entre rounds. Anote o tempo total","Cada tiro deve ser constante; não saia voando no primeiro."],
-[2,"Lower Race","Corrida + foco pernas","Esteira 3 min progressivo + agachamento goblet x8 + avanço reverso x6/lado + ponte de glúteo x10","Força funcional: leg press 4x10 + cadeira extensora 3x12 + mesa flexora 3x12, descanso 60s","5 rounds: 300 m de esteira (RPE 8) + 12 afundos com halteres + 12 agachamentos com salto leve + 15 step up na caixa; descanso 60s. Anote o tempo","É o 'lower body' da Race: pernas cheias de sangue do começo ao fim."],
-[2,"Upper Race","Corrida + foco superior","Bike 2 min + band pull-apart x15 + flexão x6 + rotação de ombro com halter leve x8","Força funcional: supino reto 4x8 + barra fixa (ou puxada) 4x6 + desenvolvimento 3x10, descanso 60s","5 rounds: 300 m de esteira + 12 flexões + 10 thrusters com halteres + 10 remadas com halter por lado; descanso 60s. Anote o tempo","Corra com o peito aberto; o superior já estará cansado."],
-[2,"Escada de Corrida","Escada decrescente + funcional","Esteira 3 min progressivo + mobilidade de quadril e tornozelo + 2 acelerações de 20s","Força funcional: agachamento livre 4x6 + remada curvada com barra 3x10, descanso 75s","Escada: 1 km de esteira + 20 burpees, 800 m + 20 agachamentos livres, 600 m + 20 KB swings, 400 m + 20 flexões, 200 m + 20 remadas com halter por lado. Anote o tempo total","A corrida encolhe e o funcional fica. Pare o cronômetro no fim do último bloco."],
-[2,"EMOM Race","EMOM alternando corrida e estação","Bike 2 min + inchworm x5 + air squat x10 + KB swing leve x10","Força funcional: front squat 4x6 + puxada alta 3x10, descanso 75s","EMOM 30 min: min 1 = 200 m de esteira, min 2 = 12 KB swings, min 3 = 10 thrusters com halteres, min 4 = 12 step up na caixa, min 5 = 15 flexões, min 6 = 40s de bike forte; repetir 5 vezes","Se não fechar as reps dentro do minuto, reduza na próxima."],
-[2,"Race Benchmark","Teste · compare com o ciclo","Esteira 4 min progressivo + mobilidade + 2 acelerações de 20s","Força funcional: goblet squat 3x8 + supino com halteres 3x8, carga moderada (RPE 6-7)","Teste: 1 km de esteira contra o relógio; 3 min de caminhada; depois 3 rounds: 300 m de esteira + 15 burpees + 15 KB swings; 1 min de descanso. Anote tudo","Repita no fim do próximo ciclo e compare os tempos."]
+[1,"Speed Ladder","Esteira com velocidade variável + funcional","Esteira 3 min progressivo + mobilidade de tornozelo e quadril + agachamento sem carga x10 + polichinelo 30s","Circuito funcional (2 rounds, descanso 45s): 12 agachamentos com salto leve + 10 flexões + 12 KB swings + 20 m de farmer carry","Esteira com velocidade variável, alternando com funcional: Bloco A (esteira 7 min) = 4× (2 min RPE 7 / 1 min RPE 9 / 1 min caminhada) · Funcional 4 min = 12 agachamentos com salto + 10 flexões + 12 KB swings · Bloco B (esteira 6 min) = 6× (30s muito forte / 90s trote) · Funcional 4 min = 15 step up + 12 remadas + 10 thrusters · Finalizador (esteira 5 min) = sobe a velocidade a cada minuto. Anote o tempo total","A esteira nunca fica no mesmo ritmo: você sobe e desce a velocidade o tempo todo."],
+[1,"Fartlek Race","Fartlek na esteira + circuito","Bike 2 min + mobilidade de quadril e tornozelo + agachamento x10 + flexão x6 + polichinelo 30s","Circuito funcional (3 rounds, descanso 45s): 12 goblet squats + 10 flexões + 12 remadas com halter + 12 KB swings","Esteira 10 min em fartlek: alterne 1 min forte / 1 min leve sem parar · Funcional 5 min = 12 agachamentos goblet + 10 flexões + 12 remadas · Esteira 8 min = 2× (3 min RPE 8 / 1 min RPE 5) · Funcional 5 min = 12 burpees + 15 KB swings + 20 m de farmer carry. Anote o tempo","Fartlek = você manda nas mudanças de velocidade, mas não para de correr."],
+[1,"Sobe & Desce","Velocidade em degraus + funcional","Esteira 3 min progressivo + mobilidade + 2 acelerações de 20s","Circuito funcional (2 rounds, descanso 45s): 15 step up + 12 afundos com halteres + 10 flexões + 12 KB swings","Protocolo sobe-desce na esteira, sem parar: 3× (1 min RPE 5, 1 min RPE 8, 1 min RPE 9-10, e volta descendo 1 min RPE 8, 1 min RPE 5) = 15 min · Funcional 5 min = 12 step up + 12 afundos + 10 flexões · Esteira 6 min = 6× (40s forte / 20s leve). Anote o tempo","É a esteira mudando de velocidade toda hora — esse é o coração da Race."],
+[1,"Pirâmide de Velocidade","Pirâmide por tempo + funcional","Esteira 3 min progressivo + mobilidade + agachamento sem carga x10","Circuito funcional (3 rounds, descanso 45s): 12 agachamentos com salto leve + 10 thrusters com halteres + 12 remadas com halter","Pirâmide na esteira, velocidade sobe e desce: 1-2-3-2-1 min em RPE 8, com 1 min de trote entre os picos · A cada tiro, ao descer, faça 10 agachamentos com salto + 10 flexões · Fechar com 5 min de trote progressivo. Anote o tempo","Pico longo no meio (3 min) e volta descendo. Não é distância fixa: é tempo e velocidade."],
+[1,"Intervalado Curto","Tiros curtos + circuito","Bike 2 min + mobilidade + agachamento x10 + flexão x6 + polichinelo 30s","Circuito funcional (2 rounds, descanso 45s): 15 KB swings + 12 flexões + 10 thrusters + 20 m de farmer carry","Esteira 10 min: 10× (30s forte / 30s leve) · Funcional 5 min = 15 KB swings + 12 flexões + 10 thrusters · Esteira 8 min: 8× (20s muito forte / 40s leve) · Funcional 5 min = 12 remadas + 12 agachamentos com salto + 20 m de farmer carry. Anote o tempo","Tiros curtos e muitos: a velocidade muda o tempo inteiro."],
+[2,"Progressivo + Circuito","Esteira progressiva + funcional","Esteira 3 min progressivo + mobilidade + 2 acelerações de 20s","Circuito funcional (3 rounds, descanso 45s): 12 goblet squats + 10 flexões + 12 remadas + 12 afundos","Esteira 10 min progressivo: comece em RPE 5 e suba 1 ponto a cada 2 min até RPE 9 · Funcional 6 min = 12 goblet squats + 10 flexões + 12 remadas · Esteira 6 min: 3× (1 min RPE 9 / 1 min RPE 5) · Funcional 6 min = 12 step up + 12 afundos + 15 KB swings. Anote o tempo","Você sobe a velocidade aos poucos e depois faz picos — nada de ritmo constante."],
+[2,"EMOM Race","EMOM alternando esteira e funcional","Bike 2 min + inchworm x5 + air squat x10 + KB swing leve x10","Circuito funcional (2 rounds, descanso 45s): 12 step up + 12 remadas com halter + 10 flexões + 12 KB swings","EMOM 24 min alternando esteira e funcional: min 1 = esteira 40s forte (ou 200 m), min 2 = 12 KB swings, min 3 = 12 step up na caixa, min 4 = 10 thrusters, min 5 = 15 flexões, min 6 = 40s de bike forte; repetir 4 vezes","Se não fechar as reps dentro do minuto, reduza na próxima."],
+[2,"Lower Race","Esteira variável + foco pernas","Esteira 3 min progressivo + agachamento goblet x8 + avanço reverso x6/lado + ponte de glúteo x10","Circuito funcional (3 rounds, descanso 60s): leg press 12 + mesa flexora 12 + cadeira extensora 12","Alternância esteira ↔ pernas: esteira 8 min = 4× (1 min RPE 8 / 1 min RPE 5) · Funcional 5 min = 12 afundos com halteres + 15 step up + 12 agachamentos com salto · Esteira 6 min = 6× (40s RPE 9 / 20s leve) · Funcional 5 min = leg press 12 + mesa flexora 12 + cadeira extensora 12. Anote o tempo","Pernas cheias de sangue do começo ao fim — o 'lower' da Race, mas com a esteira mudando de ritmo."],
+[2,"Upper Race","Esteira variável + foco superior","Bike 2 min + band pull-apart x15 + flexão x6 + rotação de ombro com halter leve x8","Circuito funcional (3 rounds, descanso 60s): supino com halteres 10 + puxada frente 10 + desenvolvimento 10","Alternância esteira ↔ superior: esteira 8 min = 4× (1 min RPE 8 / 1 min RPE 5) · Funcional 5 min = 12 flexões + 10 thrusters + 10 remadas com halter por lado · Esteira 6 min = 3× (1 min RPE 9 / 1 min trote) · Funcional 5 min = 12 puxadas + 10 desenvolvimentos + 12 remadas. Anote o tempo","Corra com o peito aberto; o superior já estará cansado."],
+[2,"Race Benchmark","Teste · compare com o ciclo","Esteira 4 min progressivo + mobilidade + 2 acelerações de 20s","Circuito funcional (2 rounds, descanso 60s): 12 goblet squats + 10 flexões + 12 remadas + 12 KB swings","Teste 1: 1 km de esteira contra o relógio (anote o tempo) · 3 min de caminhada · Funcional 4 min = 15 burpees + 15 KB swings + 20 m de farmer carry · Teste 2: 500 m de esteira contra o relógio (anote). Compare com o próximo ciclo","Repita no fim do próximo ciclo e compare os dois tempos."]
 ];
 
 const mk=arr=>arr.map((d,i)=>({id:i+1,phase:d[0],title:d[1],focus:d[2],warmup:d[3],strength:d[4],cond:d[5],note:d[6]}));
@@ -363,17 +392,18 @@ const PROGRAMS={
   },
   race:{
     key:"race_v1",emoji:"🏁",brand:'RACE<span class="hl">10</span>',short:"Race",tab:"🏁 Race",meta:45,
-    blocks:[["Aquecimento","5 min","🔥","warmup",300],["Força funcional","12 min","🏋️","strength",720],["Corrida + funcional","28 min","🏃","cond",1680]],
+    blocks:[["Aquecimento","5 min","🔥","warmup",300],["Circuito funcional","12 min","🏋️","strength",720],["Esteira + funcional","28 min","🏃","cond",1680]],
     groups:[
-      {name:"Tiros & Circuito",range:"Treinos 1-5",c:"amber",match:w=>w.phase===1},
-      {name:"Força + Corrida",range:"Treinos 6-10",c:"sky",match:w=>w.phase===2}
+      {name:"Tiros & Velocidade",range:"Treinos 1-5",c:"amber",match:w=>w.phase===1},
+      {name:"Alternado & Força",range:"Treinos 6-10",c:"sky",match:w=>w.phase===2}
     ],
     workouts:mk(raceData),
-    foot:"As sessões Race têm meta de 45 min: aquecimento 5', força funcional 12' e corrida + funcional 28'. O formato é o do estúdio — tiro na esteira e volta pro funcional. Se estourar, corte o último round.",
+    foot:"As sessões Race têm meta de 45 min: aquecimento 5', circuito funcional 12' e esteira + funcional 28'. O diferencial é a esteira com velocidade variável (tiro, progressivo, sobe-desce) alternando com o funcional — ida e volta. Se estourar, corte o último bloco.",
     guide:'<ul>'+
-      '<li><b>Formato:</b> é o estilo de estúdio — tiro na esteira seguido de bloco funcional, tudo dentro de ~45 min.</li>'+
+      '<li><b>Formato:</b> estilo de estúdio — a esteira <b>muda de velocidade o tempo todo</b> (tiro, progressivo, sobe-desce) e você alterna esteira ↔ funcional várias vezes, tudo em ~45 min.</li>'+
+      '<li><b>Diferença do Hyrox:</b> aqui é <b>tempo e velocidade</b> na esteira; no Hyrox é <b>distância fixa</b> (200/400/800 m) + estação, simulando a prova.</li>'+
       '<li><b>Frequência:</b> 3x por semana, com 1 dia de descanso entre sessões de perna.</li>'+
-      '<li><b>Esteira:</b> ajuste o RPE ao seu condicionamento de hoje; tiro forte é 8, não 10. A caminhada entre tiros é recuperação ativa.</li>'+
+      '<li><b>Esteira:</b> ajuste o RPE ao seu condicionamento de hoje; tiro forte é 8, não 10. O trote/caminhada entre tiros é recuperação ativa.</li>'+
       '<li><b>Cargas:</b> no funcional, escolha cargas que permitam manter o ritmo da aula. Se a forma quebrar, reduza.</li>'+
       '<li><b>Equipamento:</b> sem remo/sled/SkiErg/wall ball → veja "Equivalências". Esteira ocupada? Use a bike.</li>'+
       '<li><b>Anote:</b> o tempo total de cada sessão para ver a evolução.</li>'+
@@ -591,6 +621,11 @@ load();buildSegs();renderTabs();updateHeader();renderGrid();renderDetail();updat
 if(!storageOK||location.protocol==="file:"){
   document.getElementById("storage-banner").classList.add("show");
 }
+(function(){
+  var d=new Date().getDay();
+  var el=document.querySelector('#wk li[data-d="'+d+'"]');
+  if(el)el.classList.add("today");
+})();
 </script>
 </body>
 </html>
